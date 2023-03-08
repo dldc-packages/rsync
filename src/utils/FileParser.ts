@@ -1,3 +1,4 @@
+import { ZenRsyncErreur } from '../ZenRsyncErreur';
 import { Md5Hash } from './md5';
 
 export interface IFileParser {
@@ -58,13 +59,13 @@ export const FileParser = (() => {
 
     function readEof() {
       if (offset !== buffer.byteLength) {
-        throw new Error('Unexpected data after EOF');
+        throw ZenRsyncErreur.ExpectedEof.create();
       }
     }
 
     function ensureRead(size: number) {
       if (offset + size > buffer.byteLength) {
-        throw new Error('Unexpected end of file');
+        throw ZenRsyncErreur.UnexpectedEof.create();
       }
     }
   }

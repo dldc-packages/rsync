@@ -2,6 +2,7 @@ import { Diff } from './files/Diff';
 import { arrayBufferEquals } from './utils/arrayBufferEquals';
 import { FileBuilder } from './utils/FileBuilder';
 import { Data } from './utils/types';
+import { ZenRsyncErreur } from './ZenRsyncErreur';
 
 export function apply(bFile: Data, patch: ArrayBuffer): ArrayBuffer {
   const bView = new Uint8Array(bFile);
@@ -43,7 +44,7 @@ export function apply(bFile: Data, patch: ArrayBuffer): ArrayBuffer {
     // write all matched block until nextPatch.blockIndex
     while (nextMatchedBlock === null || nextMatchedBlock !== nextPatch.blockIndex) {
       if (nextMatchedBlock === null) {
-        throw new Error(`Unexpected diff, patch block after ${nextPatch.blockIndex}, but the block is not matched`);
+        throw ZenRsyncErreur.InvalidDiff.create(nextPatch.blockIndex);
       }
       nextMatchedBlock = applyMatchedBlock(nextMatchedBlock);
     }

@@ -13,6 +13,7 @@
 
 import { FileBuilder } from '../utils/FileBuilder';
 import { FileParser } from '../utils/FileParser';
+import { ZenRsyncErreur } from '../ZenRsyncErreur';
 
 export interface IDiffBuilder {
   addMatchedBlock(index: number): void;
@@ -132,7 +133,7 @@ export const Diff = (() => {
     for (let i = 0; i < matchedBlocksCount; i += 1) {
       const blockIndex = readMatchedBlock();
       if (blockIndex === null) {
-        throw new Error('Unexpected end of file');
+        throw ZenRsyncErreur.UnexpectedEof.create();
       }
       matchedBlocks.push(blockIndex);
     }
@@ -141,7 +142,7 @@ export const Diff = (() => {
     for (let i = 0; i < patchesCount; i += 1) {
       const patch = readPatch();
       if (patch === null) {
-        throw new Error('Unexpected end of file');
+        throw ZenRsyncErreur.UnexpectedEof.create();
       }
       patches.push(patch);
     }
