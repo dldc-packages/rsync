@@ -153,3 +153,14 @@ test('sync text files A -> B', async () => {
 
   expect(toHex(fileB2)).toEqual(toHex(fileA.buffer));
 });
+
+test('sync to empty file', async () => {
+  const emptyFile = new ArrayBuffer(0);
+  const checksum = prepare(emptyFile);
+  expect(toHex(checksum)).toEqual(['00000400', '00000000']);
+  expect(checksum.byteLength).toBe(8);
+  const patch = diff(data.buffer, checksum);
+  expect(toHex(patch)).toHaveLength(69);
+  const fileB2 = apply(emptyFile, patch);
+  expect(toHex(fileB2)).toEqual(toHex(data.buffer));
+});
