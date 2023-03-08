@@ -1,4 +1,4 @@
-import { adler32, rollingAdler32 } from './adler32';
+import { adler32, rollingAdler32 } from '../src/utils/adler32';
 
 test('rollingAdler32', () => {
   const data = new ArrayBuffer(100);
