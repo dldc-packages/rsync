@@ -1,6 +1,6 @@
 {
   "name": "zen-rsync",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A pure TypeScript implementation of the rsync algorithm",
   "keywords": [
     "diff",
