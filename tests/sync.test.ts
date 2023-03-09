@@ -154,6 +154,44 @@ test('sync text files A -> B', async () => {
   expect(toHex(fileB2)).toEqual(toHex(fileA.buffer));
 });
 
+test('sync text files A -> A', async () => {
+  const fileA = await readFile('tests/fixtures/text-a.txt');
+  const fileB = await readFile('tests/fixtures/text-a.txt');
+
+  expect(fileA.byteLength).toBe(992);
+  expect(fileB.byteLength).toBe(992);
+
+  const checksum = prepare(fileB, 128);
+  // prettier-ignore
+  expect(toHex(checksum)).toEqual([
+    "00000080",  // = 128 (block size)
+    "00000008",  // = 8 (number of blocks)
+    "0ed52c37", "9b6be986", "c4e17ad5", "7b19cbb8", "96290aee",
+    "e3132cfe", "333af37b", "1cd6bf7e", "6f752de9", "6a2cf985",
+    "814d3159", "2f2a9a9f", "8eedfed8", "ec53c8d6", "b0ac9d47",
+    "e0612fa6", "b8501ae8", "a39deb6c", "7bd4bacb", "1b4e74ec",
+    "06b1332e", "05c408d9", "9e8085d2", "f9c4a4c0", "9b135883",
+    "6e072e53", "ef37098b", "9b5c34f6", "30156b84", "65df4d6b",
+    "2f353071", "ff0c6ecb", "b4332f2a", "653a6b18", "436d069e",
+    "08fe24e5", "a6cc56d7", "0d22ba53", "38ccc048", "3a11a902",
+  ]);
+
+  expect(checksum.byteLength).toBe(168);
+  const patch = diff(fileA, checksum);
+  expect(patch.byteLength).toBe(44);
+  // prettier-ignore
+  expect(toHex(patch)).toEqual([
+    "00000080", // = 128 (block size)
+    "00000000", // 0 patch
+    "00000008", // 8 matches
+    "00000001", "00000002", "00000003", "00000004", "00000005", "00000006", "00000007", "00000008", // 8 matches
+  ]);
+
+  const fileB2 = apply(fileB, patch);
+
+  expect(toHex(fileB2)).toEqual(toHex(fileA.buffer));
+});
+
 test('sync to empty file', async () => {
   const emptyFile = new ArrayBuffer(0);
   const checksum = prepare(emptyFile);

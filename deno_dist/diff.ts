@@ -5,7 +5,7 @@ import { FileBuilder, IFileBuilder } from './utils/FileBuilder.ts';
 import { md5, Md5Hash } from './utils/md5.ts';
 import { Data } from './utils/types.ts';
 
-export type HashTableItem = [blockIndex: number, adler32sum: number, md5sum: Md5Hash];
+export type HashTableItem = [blockIndex: number, md5sum: Md5Hash];
 export type HashTableEntry = Array<HashTableItem>;
 export type HashTable = Map<number, HashTableEntry>;
 
@@ -85,7 +85,7 @@ function createHashTable(blocksCount: number, readBlock: () => IBlock, readEof: 
 
   for (let blockIndex = 1; blockIndex <= blocksCount; blockIndex++) {
     const { adler32, md5 } = readBlock();
-    const entry: HashTableItem = [blockIndex, adler32, md5];
+    const entry: HashTableItem = [blockIndex, md5];
     const item = hashTable.get(adler32);
     if (item) {
       item.push(entry);
@@ -108,11 +108,7 @@ function findMatch(hashTable: HashTable, checksum: number, block: Uint8Array): n
   }
 
   for (let i = 0; i < entry.length; i++) {
-    const [blockIndex, adler32sum, md5sum] = entry[i];
-    //compare adler32sum
-    if ((adler32sum & 0xffffffff) !== checksum) {
-      continue;
-    }
+    const [blockIndex, md5sum] = entry[i];
     //do strong comparison
     const blockMd5Raw = md5(block);
     const blockMd5 = new Uint32Array([blockMd5Raw[0], blockMd5Raw[1], blockMd5Raw[2], blockMd5Raw[3]]); //convert to unsigned 32
