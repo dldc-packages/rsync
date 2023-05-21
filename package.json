@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "@types/jest": "^29.4.0",
+    "@types/sql.js": "^1.4.4",
     "@typescript-eslint/eslint-plugin": "^5.53.0",
     "@typescript-eslint/parser": "^5.53.0",
     "denoify": "^1.4.10",
@@ -56,6 +57,7 @@
     "np": "^7.6.3",
     "prettier": "^2.8.4",
     "rimraf": "^4.1.2",
+    "sql.js": "^1.8.0",
     "ts-jest": "^29.0.5",
     "tslib": "^2.5.0",
     "tsup": "^6.6.3",

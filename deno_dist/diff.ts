@@ -119,6 +119,12 @@ function findMatch(hashTable: HashTable, checksum: number, block: Uint8Array): n
       md5sum[2] === blockMd5[2] &&
       md5sum[3] === blockMd5[3]
     ) {
+      // remove the matched block from the hash table
+      // beacause each matched block can only be used once
+      entry.splice(i, 1);
+      if (entry.length === 0) {
+        hashTable.delete(checksum);
+      }
       return blockIndex;
     }
   }
