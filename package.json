@@ -38,7 +38,8 @@
     "lint:fix": "prettier . --write . && eslint . --fix",
     "release": "yarn build && np",
     "test": "yarn lint && jest --coverage",
-    "test:run": "jest --coverage",
+    "test:run": "jest",
+    "test:coverage": "jest --coverage",
     "test:watch": "jest --watch",
     "typecheck": "tsc --noEmit"
   },
