@@ -1,4 +1,5 @@
 import { readFile } from 'fs/promises';
+import { expect, test } from 'vitest';
 import { apply, diff, prepare } from '../src/mod';
 import { adler32 } from '../src/utils/adler32';
 import { md5 } from '../src/utils/md5';

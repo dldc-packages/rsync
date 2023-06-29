@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest';
 import { adler32, rollingAdler32 } from '../src/utils/adler32';
 
 test('rollingAdler32', () => {

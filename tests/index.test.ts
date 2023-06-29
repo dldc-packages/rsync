@@ -1,4 +1,5 @@
 import { Buffer } from 'buffer';
+import { expect, test } from 'vitest';
 import { prepare } from '../src/mod';
 import { data } from './utils/data';
 

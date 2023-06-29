@@ -1,4 +1,5 @@
 import initSqlJs from 'sql.js';
+import { expect, test } from 'vitest';
 import { apply, diff, prepare } from '../src/mod';
 import { toHex } from './utils/hex';
 
