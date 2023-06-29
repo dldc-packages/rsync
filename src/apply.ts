@@ -1,8 +1,8 @@
-import { Diff } from './files/Diff';
-import { arrayBufferEquals } from './utils/arrayBufferEquals';
-import { FileBuilder } from './utils/FileBuilder';
-import { Data } from './utils/types';
 import { ZenRsyncErreur } from './ZenRsyncErreur';
+import { Diff } from './files/Diff';
+import { Data } from './types';
+import { FileBuilder } from './utils/FileBuilder';
+import { arrayBufferEquals } from './utils/arrayBufferEquals';
 
 export function apply(file: Data, patch: ArrayBuffer): ArrayBuffer {
   const bView = new Uint8Array(file);

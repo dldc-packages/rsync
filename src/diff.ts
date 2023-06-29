@@ -1,9 +1,9 @@
 import { Checksum, IBlock } from './files/Checksum';
 import { Diff } from './files/Diff';
-import { adler32, rollingAdler32 } from './utils/adler32';
+import { Data } from './types';
 import { FileBuilder, IFileBuilder } from './utils/FileBuilder';
-import { md5, Md5Hash } from './utils/md5';
-import { Data } from './utils/types';
+import { adler32, rollingAdler32 } from './utils/adler32';
+import { Md5Hash, md5 } from './utils/md5';
 
 export type HashTableItem = [blockIndex: number, md5sum: Md5Hash];
 export type HashTableEntry = Array<HashTableItem>;
