@@ -1,16 +1,25 @@
-import { Erreur } from 'erreur';
+import { ErreurType } from '@dldc/erreur';
 
 export const ZenRsyncErreur = {
-  InvalidDiff: Erreur.declare<{ blockIndex: number }>('InvalidDiff')
-    .withMessage(({ blockIndex }) => `Unexpected diff, patch block after ${blockIndex}, but the block is not matched`)
-    .withTransform((blockIndex: number) => ({ blockIndex })),
-  BlockCountMismatch: Erreur.declare<{ expected: number; actual: number }>('BlockCountMismatch').withMessage(
-    ({ expected, actual }) => `Block count mismatch, expected ${expected}, got ${actual}`
+  InvalidDiff: ErreurType.defineWithTransform(
+    'InvalidDiff',
+    (blockIndex: number) => ({ blockIndex }),
+    (err, provider, { blockIndex }) => {
+      return err
+        .with(provider)
+        .withMessage(`Unexpected diff, patch block after ${blockIndex}, but the block is not matched`);
+    }
   ),
-  UnexpectedEof: Erreur.declare<null>('UnexpectedEof')
-    .withMessage('Unexpected end of file')
-    .withTransform(() => null),
-  ExpectedEof: Erreur.declare<null>('ExpectedEof')
-    .withMessage('Expected end of file but found more data')
-    .withTransform(() => null),
+  BlockCountMismatch: ErreurType.define<{ expected: number; actual: number }>(
+    'BlockCountMismatch',
+    (err, provider, { expected, actual }) => {
+      return err.with(provider).withMessage(`Block count mismatch, expected ${expected}, got ${actual}`);
+    }
+  ),
+  UnexpectedEof: ErreurType.defineEmpty('UnexpectedEof', (err, provider) => {
+    return err.with(provider).withMessage('Unexpected end of file');
+  }),
+  ExpectedEof: ErreurType.defineEmpty('ExpectedEof', (err, provider) => {
+    return err.with(provider).withMessage('Expected end of file but found more data');
+  }),
 };
