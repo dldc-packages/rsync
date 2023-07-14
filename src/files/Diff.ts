@@ -36,7 +36,7 @@ export interface IDiffParser {
   readEof(): void;
 }
 
-export const Diff = (() => {
+export const DiffFile = (() => {
   return {
     build,
     parse,

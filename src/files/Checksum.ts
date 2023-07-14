@@ -36,7 +36,7 @@ export interface IChecksumBuilder {
   getArrayBuffer(): ArrayBuffer;
 }
 
-export const Checksum = (() => {
+export const ChecksumFile = (() => {
   return {
     parse,
     build,

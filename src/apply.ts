@@ -1,5 +1,5 @@
 import { ZenRsyncErreur } from './ZenRsyncErreur';
-import { Diff } from './files/Diff';
+import { DiffFile } from './files/Diff';
 import type { Data } from './types';
 import { FileBuilder } from './utils/FileBuilder';
 import { arrayBufferEquals } from './utils/arrayBufferEquals';
@@ -8,7 +8,7 @@ export function apply(file: Data, patch: ArrayBuffer): ArrayBuffer {
   const bView = new Uint8Array(file);
 
   const { blockSize, patchesCount, matchedBlocksCount, readMatchedBlock, matchedBlocksFile, readPatch, readEof } =
-    Diff.parse(patch);
+    DiffFile.parse(patch);
 
   // hanlde perfect equality
   const expectedMatchedBlocksCount = Math.ceil(file.byteLength / blockSize);

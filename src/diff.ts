@@ -1,6 +1,6 @@
 import type { IBlock } from './files/Checksum';
-import { Checksum } from './files/Checksum';
-import { Diff } from './files/Diff';
+import { ChecksumFile } from './files/Checksum';
+import { DiffFile } from './files/Diff';
 import type { Data } from './types';
 import type { IFileBuilder } from './utils/FileBuilder';
 import { FileBuilder } from './utils/FileBuilder';
@@ -8,23 +8,23 @@ import { adler32, rollingAdler32 } from './utils/adler32';
 import type { Md5Hash } from './utils/md5';
 import { md5 } from './utils/md5';
 
-export type HashTableItem = [blockIndex: number, md5sum: Md5Hash];
-export type HashTableEntry = Array<HashTableItem>;
-export type HashTable = Map<number, HashTableEntry>;
+export type THashTableItem = [blockIndex: number, md5sum: Md5Hash];
+export type THashTableEntry = Array<THashTableItem>;
+export type THashTable = Map<number, THashTableEntry>;
 
-export interface ParsedChecksum {
+export interface IParsedChecksum {
   blockSize: number;
   blocksCount: number;
-  hashTable: HashTable;
+  hashTable: THashTable;
 }
 
 export function diff(aFile: Data, checksum: ArrayBuffer): ArrayBuffer {
   const aView = new Uint8Array(aFile);
-  const { blockSize, blocksCount, readBlock, readEof } = Checksum.parse(checksum);
+  const { blockSize, blocksCount, readBlock, readEof } = ChecksumFile.parse(checksum);
 
   const hashTable = createHashTable(blocksCount, readBlock, readEof);
 
-  const file = Diff.build(blockSize);
+  const file = DiffFile.build(blockSize);
 
   let offset = 0;
 
@@ -83,12 +83,12 @@ export function diff(aFile: Data, checksum: ArrayBuffer): ArrayBuffer {
   return file.getArrayBuffer();
 }
 
-function createHashTable(blocksCount: number, readBlock: () => IBlock, readEof: () => void): HashTable {
-  const hashTable: HashTable = new Map();
+function createHashTable(blocksCount: number, readBlock: () => IBlock, readEof: () => void): THashTable {
+  const hashTable: THashTable = new Map();
 
   for (let blockIndex = 1; blockIndex <= blocksCount; blockIndex++) {
     const { adler32, md5 } = readBlock();
-    const entry: HashTableItem = [blockIndex, md5];
+    const entry: THashTableItem = [blockIndex, md5];
     const item = hashTable.get(adler32);
     if (item) {
       item.push(entry);
@@ -104,7 +104,7 @@ function createHashTable(blocksCount: number, readBlock: () => IBlock, readEof: 
 /**
  * Returns false of the index of the matched block
  */
-function findMatch(hashTable: HashTable, checksum: number, block: Uint8Array): number | false {
+function findMatch(hashTable: THashTable, checksum: number, block: Uint8Array): number | false {
   const entry = hashTable.get(checksum);
   if (!entry) {
     return false;
