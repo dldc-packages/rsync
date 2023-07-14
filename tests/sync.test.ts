@@ -193,7 +193,7 @@ test('sync text files A -> A', async () => {
   expect(toHex(fileB2)).toEqual(toHex(fileA.buffer));
 });
 
-test('sync to empty file', async () => {
+test('sync to empty file', () => {
   const emptyFile = new ArrayBuffer(0);
   const checksum = prepare(emptyFile);
   expect(toHex(checksum)).toEqual(['00000400', '00000000']);

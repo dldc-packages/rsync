@@ -35,9 +35,9 @@ function md51_array(a: Uint8Array): Md5Hash {
 
   // Beware that the final length might not fit in 32 bits so we take care of that
   tmp = n * 8;
-  tmp = tmp.toString(16).match(/(.*?)(.{0,8})$/);
-  const lo = parseInt(tmp![2], 16);
-  const hi = parseInt(tmp![1], 16) || 0;
+  tmp = tmp.toString(16).match(/(.*?)(.{0,8})$/)!;
+  const lo = parseInt(tmp[2], 16);
+  const hi = parseInt(tmp[1], 16) || 0;
 
   tail[14] = lo;
   tail[15] = hi;

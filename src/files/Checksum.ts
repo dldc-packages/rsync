@@ -1,6 +1,6 @@
 import { FileBuilder } from '../utils/FileBuilder';
 import { FileParser } from '../utils/FileParser';
-import { Md5Hash } from '../utils/md5';
+import type { Md5Hash } from '../utils/md5';
 import { ZenRsyncErreur } from '../ZenRsyncErreur';
 
 /**

@@ -1,4 +1,4 @@
-import { Md5Hash } from './md5';
+import type { Md5Hash } from './md5';
 
 export interface IFileBuilder {
   writeUint8(value: number): void;

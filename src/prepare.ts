@@ -1,5 +1,5 @@
 import { Checksum } from './files/Checksum';
-import { Data } from './types';
+import type { Data } from './types';
 import { adler32 } from './utils/adler32';
 import { md5 } from './utils/md5';
 import { DEFAULT_BLOCK_SIZE } from './utils/options';
