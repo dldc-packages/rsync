@@ -1,25 +1,40 @@
-import { ErreurType } from '@dldc/erreur';
+import type { IKey } from '@dldc/erreur';
+import { Erreur, Key } from '@dldc/erreur';
 
-export const ZenRsyncErreur = {
-  InvalidDiff: ErreurType.defineWithTransform(
-    'InvalidDiff',
-    (blockIndex: number) => ({ blockIndex }),
-    (err, provider, { blockIndex }) => {
-      return err
-        .with(provider)
-        .withMessage(`Unexpected diff, patch block after ${blockIndex}, but the block is not matched`);
+export const ZenRsyncErreur = (() => {
+  const InvalidDiffKey: IKey<{ blockIndex: number }, false> = Key.create('InvalidDiff');
+  const BlockCountMismatchKey: IKey<{ expected: number; actual: number }, false> = Key.create('BlockCountMismatch');
+  const UnexpectedEofKey: IKey<undefined, false, []> = Key.createEmpty('UnexpectedEof');
+  const ExpectedEofKey: IKey<undefined, false, []> = Key.createEmpty('ExpectedEof');
+
+  return {
+    InvalidDiff: {
+      Key: InvalidDiffKey,
+      create(blockIndex: number) {
+        return Erreur.createWith(InvalidDiffKey, { blockIndex }).withMessage(
+          `Unexpected diff, patch block after ${blockIndex}, but the block is not matched`,
+        );
+      },
     },
-  ),
-  BlockCountMismatch: ErreurType.define<{ expected: number; actual: number }>(
-    'BlockCountMismatch',
-    (err, provider, { expected, actual }) => {
-      return err.with(provider).withMessage(`Block count mismatch, expected ${expected}, got ${actual}`);
+    BlockCountMismatch: {
+      Key: BlockCountMismatchKey,
+      create(expected: number, actual: number) {
+        return Erreur.createWith(BlockCountMismatchKey, { expected, actual }).withMessage(
+          `Block count mismatch, expected ${expected}, got ${actual}`,
+        );
+      },
     },
-  ),
-  UnexpectedEof: ErreurType.defineEmpty('UnexpectedEof', (err, provider) => {
-    return err.with(provider).withMessage('Unexpected end of file');
-  }),
-  ExpectedEof: ErreurType.defineEmpty('ExpectedEof', (err, provider) => {
-    return err.with(provider).withMessage('Expected end of file but found more data');
-  }),
-};
+    UnexpectedEof: {
+      Key: UnexpectedEofKey,
+      create() {
+        return Erreur.createWith(UnexpectedEofKey).withMessage('Unexpected end of file');
+      },
+    },
+    ExpectedEof: {
+      Key: ExpectedEofKey,
+      create() {
+        return Erreur.createWith(ExpectedEofKey).withMessage('Expected end of file but found more data');
+      },
+    },
+  };
+})();

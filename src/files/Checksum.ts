@@ -70,7 +70,7 @@ export const ChecksumFile = (() => {
 
     function readEof() {
       if (blocksCount !== currentBlockCount) {
-        throw ZenRsyncErreur.BlockCountMismatch.create({ expected: blocksCount, actual: currentBlockCount });
+        throw ZenRsyncErreur.BlockCountMismatch.create(blocksCount, currentBlockCount);
       }
       file.readEof();
     }
@@ -99,7 +99,7 @@ export const ChecksumFile = (() => {
 
     function getArrayBuffer(): ArrayBuffer {
       if (blocksCount !== currentBlockCount) {
-        throw ZenRsyncErreur.BlockCountMismatch.create({ expected: blocksCount, actual: currentBlockCount });
+        throw ZenRsyncErreur.BlockCountMismatch.create(blocksCount, currentBlockCount);
       }
       return file.getArrayBuffer();
     }
