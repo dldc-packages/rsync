@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@dldc/erreur':
-    specifier: ^4.0.1
-    version: 4.0.1
+    specifier: ^4.1.0
+    version: 4.1.0
 
 devDependencies:
   '@types/node':
@@ -97,8 +97,8 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@dldc/erreur@4.0.1:
-    resolution: {integrity: sha512-z5o2XEAq5IXps5VzdiVLh9jNuCrF3ifE7SG1E3mEEEdf+4O1BrdsKF4NEOJZAwZkA6XpghOHh4W1U7mdai+Elw==}
+  /@dldc/erreur@4.1.0:
+    resolution: {integrity: sha512-RI5G49wejIzvR7e19i0u9D5DhY9ZF/2cneDoNqCg0BX8p8Fru3jICZ8puq48Kaq7vbV2gTs5OXaRFBFh+RxKHw==}
     dependencies:
       '@dldc/stack': 4.0.2
     dev: false
