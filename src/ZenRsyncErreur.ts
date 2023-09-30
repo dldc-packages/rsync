@@ -1,11 +1,11 @@
-import type { IKey } from '@dldc/erreur';
+import type { TKey, TVoidKey } from '@dldc/erreur';
 import { Erreur, Key } from '@dldc/erreur';
 
 export const ZenRsyncErreur = (() => {
-  const InvalidDiffKey: IKey<{ blockIndex: number }, false> = Key.create('InvalidDiff');
-  const BlockCountMismatchKey: IKey<{ expected: number; actual: number }, false> = Key.create('BlockCountMismatch');
-  const UnexpectedEofKey: IKey<undefined, false, []> = Key.createEmpty('UnexpectedEof');
-  const ExpectedEofKey: IKey<undefined, false, []> = Key.createEmpty('ExpectedEof');
+  const InvalidDiffKey: TKey<{ blockIndex: number }> = Key.create('InvalidDiff');
+  const BlockCountMismatchKey: TKey<{ expected: number; actual: number }> = Key.create('BlockCountMismatch');
+  const UnexpectedEofKey: TVoidKey = Key.createEmpty('UnexpectedEof');
+  const ExpectedEofKey: TVoidKey = Key.createEmpty('ExpectedEof');
 
   return {
     InvalidDiff: {
