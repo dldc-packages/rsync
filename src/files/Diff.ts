@@ -11,9 +11,9 @@
  *   n bytes - new data
  */
 
+import { RsyncErreur } from '../RsyncErreur';
 import { FileBuilder } from '../utils/FileBuilder';
 import { FileParser } from '../utils/FileParser';
-import { ZenRsyncErreur } from '../ZenRsyncErreur';
 
 export interface IDiffBuilder {
   addMatchedBlock(index: number): void;
@@ -133,7 +133,7 @@ export const DiffFile = (() => {
     for (let i = 0; i < matchedBlocksCount; i += 1) {
       const blockIndex = readMatchedBlock();
       if (blockIndex === null) {
-        throw ZenRsyncErreur.UnexpectedEof.create();
+        throw RsyncErreur.UnexpectedEof.create();
       }
       matchedBlocks.push(blockIndex);
     }
@@ -142,7 +142,7 @@ export const DiffFile = (() => {
     for (let i = 0; i < patchesCount; i += 1) {
       const patch = readPatch();
       if (patch === null) {
-        throw ZenRsyncErreur.UnexpectedEof.create();
+        throw RsyncErreur.UnexpectedEof.create();
       }
       patches.push(patch);
     }

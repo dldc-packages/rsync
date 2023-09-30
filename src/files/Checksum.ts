@@ -1,7 +1,7 @@
+import { RsyncErreur } from '../RsyncErreur';
 import { FileBuilder } from '../utils/FileBuilder';
 import { FileParser } from '../utils/FileParser';
 import type { Md5Hash } from '../utils/md5';
-import { ZenRsyncErreur } from '../ZenRsyncErreur';
 
 /**
  * - 4 bytes block size
@@ -70,7 +70,7 @@ export const ChecksumFile = (() => {
 
     function readEof() {
       if (blocksCount !== currentBlockCount) {
-        throw ZenRsyncErreur.BlockCountMismatch.create(blocksCount, currentBlockCount);
+        throw RsyncErreur.BlockCountMismatch.create(blocksCount, currentBlockCount);
       }
       file.readEof();
     }
@@ -99,7 +99,7 @@ export const ChecksumFile = (() => {
 
     function getArrayBuffer(): ArrayBuffer {
       if (blocksCount !== currentBlockCount) {
-        throw ZenRsyncErreur.BlockCountMismatch.create(blocksCount, currentBlockCount);
+        throw RsyncErreur.BlockCountMismatch.create(blocksCount, currentBlockCount);
       }
       return file.getArrayBuffer();
     }

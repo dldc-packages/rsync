@@ -1,4 +1,4 @@
-export { ZenRsyncErreur } from './ZenRsyncErreur';
+export { RsyncErreur } from './RsyncErreur';
 export { apply } from './apply';
 export { diff, type IParsedChecksum, type THashTable, type THashTableEntry, type THashTableItem } from './diff';
 export { ChecksumFile, type IBlock, type IChecksumBuilder, type IChecksumParser } from './files/Checksum';

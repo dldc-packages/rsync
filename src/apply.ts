@@ -1,4 +1,4 @@
-import { ZenRsyncErreur } from './ZenRsyncErreur';
+import { RsyncErreur } from './RsyncErreur';
 import { DiffFile } from './files/Diff';
 import type { Data } from './types';
 import { FileBuilder } from './utils/FileBuilder';
@@ -45,7 +45,7 @@ export function apply(file: Data, patch: ArrayBuffer): ArrayBuffer {
     // write all matched block until nextPatch.blockIndex
     while (nextMatchedBlock === null || nextMatchedBlock !== nextPatch.blockIndex) {
       if (nextMatchedBlock === null) {
-        throw ZenRsyncErreur.InvalidDiff.create(nextPatch.blockIndex);
+        throw RsyncErreur.InvalidDiff.create(nextPatch.blockIndex);
       }
       nextMatchedBlock = applyMatchedBlock(nextMatchedBlock);
     }

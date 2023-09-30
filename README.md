@@ -1,17 +1,17 @@
-# ♻️ Zen Rsync
+# ♻️ Rsync
 
 > A pure TypeScript implementation of the [rsync algorithm](https://www.andrew.cmu.edu/course/15-749/READINGS/required/cas/tridgell96.pdf)
 
 ## Installation
 
 ```sh
-npm install zen-rsync
+npm install @dldc/rsync
 ```
 
 ## Usage
 
 ```ts
-import { prepare, diff, apply } from 'zen-rsync';
+import { prepare, diff, apply } from '@dldc/rsync';
 
 const checksum = prepare(destFile); // you can specify block size as second argument (default: 1024)
 // send checksum to source

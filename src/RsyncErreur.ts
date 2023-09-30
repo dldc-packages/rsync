@@ -1,7 +1,7 @@
 import type { TKey, TVoidKey } from '@dldc/erreur';
 import { Erreur, Key } from '@dldc/erreur';
 
-export const ZenRsyncErreur = (() => {
+export const RsyncErreur = (() => {
   const InvalidDiffKey: TKey<{ blockIndex: number }> = Key.create('InvalidDiff');
   const BlockCountMismatchKey: TKey<{ expected: number; actual: number }> = Key.create('BlockCountMismatch');
   const UnexpectedEofKey: TVoidKey = Key.createEmpty('UnexpectedEof');
