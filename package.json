@@ -1,6 +1,6 @@
 {
   "name": "@dldc/rsync",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A pure TypeScript implementation of the rsync algorithm",
   "keywords": [
     "diff",
