@@ -23,8 +23,8 @@ const syncedFile = apply(destFile, patches);
 ## Performance
 
 This package was not designed to be fast. Since it's implemented fully in TypeScript, it's not as fast as the C implementation of rsync.
-I tried to use the best practices to make is less slow but I did not benchmark it 🤷.
+I tried to use the best practices to make it less slow but I did not benchmark it 🤷.
 
 ## Dependencies 🪶
 
-This package has a single dependency [etienne-dldc/erreur](https://github.com/etienne-dldc/erreur) to define custom errors.
+This package has a single dependency [@dldc/erreur](https://github.com/dldc-packages/erreur) to define custom errors.

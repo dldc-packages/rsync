@@ -59,13 +59,13 @@ export const FileParser = (() => {
 
     function readEof() {
       if (offset !== buffer.byteLength) {
-        throw RsyncErreur.ExpectedEof.create();
+        throw RsyncErreur.ExpectedEof();
       }
     }
 
     function ensureRead(size: number) {
       if (offset + size > buffer.byteLength) {
-        throw RsyncErreur.UnexpectedEof.create();
+        throw RsyncErreur.UnexpectedEof();
       }
     }
   }

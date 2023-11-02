@@ -70,7 +70,7 @@ export const ChecksumFile = (() => {
 
     function readEof() {
       if (blocksCount !== currentBlockCount) {
-        throw RsyncErreur.BlockCountMismatch.create(blocksCount, currentBlockCount);
+        throw RsyncErreur.BlockCountMismatch(blocksCount, currentBlockCount);
       }
       file.readEof();
     }
@@ -99,7 +99,7 @@ export const ChecksumFile = (() => {
 
     function getArrayBuffer(): ArrayBuffer {
       if (blocksCount !== currentBlockCount) {
-        throw RsyncErreur.BlockCountMismatch.create(blocksCount, currentBlockCount);
+        throw RsyncErreur.BlockCountMismatch(blocksCount, currentBlockCount);
       }
       return file.getArrayBuffer();
     }

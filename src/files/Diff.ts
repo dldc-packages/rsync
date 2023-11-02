@@ -133,7 +133,7 @@ export const DiffFile = (() => {
     for (let i = 0; i < matchedBlocksCount; i += 1) {
       const blockIndex = readMatchedBlock();
       if (blockIndex === null) {
-        throw RsyncErreur.UnexpectedEof.create();
+        throw RsyncErreur.UnexpectedEof();
       }
       matchedBlocks.push(blockIndex);
     }
@@ -142,7 +142,7 @@ export const DiffFile = (() => {
     for (let i = 0; i < patchesCount; i += 1) {
       const patch = readPatch();
       if (patch === null) {
-        throw RsyncErreur.UnexpectedEof.create();
+        throw RsyncErreur.UnexpectedEof();
       }
       patches.push(patch);
     }

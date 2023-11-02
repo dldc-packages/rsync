@@ -1,40 +1,33 @@
-import type { TKey, TVoidKey } from '@dldc/erreur';
+import type { TKey } from '@dldc/erreur';
 import { Erreur, Key } from '@dldc/erreur';
 
-export const RsyncErreur = (() => {
-  const InvalidDiffKey: TKey<{ blockIndex: number }> = Key.create('InvalidDiff');
-  const BlockCountMismatchKey: TKey<{ expected: number; actual: number }> = Key.create('BlockCountMismatch');
-  const UnexpectedEofKey: TVoidKey = Key.createEmpty('UnexpectedEof');
-  const ExpectedEofKey: TVoidKey = Key.createEmpty('ExpectedEof');
+export type TRsyncErreurData =
+  | { kind: 'InvalidDiffKey'; blockIndex: number }
+  | { kind: 'BlockCountMismatchKey'; expected: number; actual: number }
+  | { kind: 'UnexpectedEofKey' }
+  | { kind: 'ExpectedEofKey' };
 
-  return {
-    InvalidDiff: {
-      Key: InvalidDiffKey,
-      create(blockIndex: number) {
-        return Erreur.createWith(InvalidDiffKey, { blockIndex }).withMessage(
-          `Unexpected diff, patch block after ${blockIndex}, but the block is not matched`,
-        );
-      },
-    },
-    BlockCountMismatch: {
-      Key: BlockCountMismatchKey,
-      create(expected: number, actual: number) {
-        return Erreur.createWith(BlockCountMismatchKey, { expected, actual }).withMessage(
-          `Block count mismatch, expected ${expected}, got ${actual}`,
-        );
-      },
-    },
-    UnexpectedEof: {
-      Key: UnexpectedEofKey,
-      create() {
-        return Erreur.createWith(UnexpectedEofKey).withMessage('Unexpected end of file');
-      },
-    },
-    ExpectedEof: {
-      Key: ExpectedEofKey,
-      create() {
-        return Erreur.createWith(ExpectedEofKey).withMessage('Expected end of file but found more data');
-      },
-    },
-  };
-})();
+export const RsyncErreurKey: TKey<TRsyncErreurData, false> = Key.create<TRsyncErreurData>('RsyncErreur');
+
+export const RsyncErreur = {
+  InvalidDiff: (blockIndex: number) => {
+    return Erreur.create(new Error(`Unexpected diff, patch block after ${blockIndex}, but the block is not matched`))
+      .with(RsyncErreurKey.Provider({ kind: 'InvalidDiffKey', blockIndex }))
+      .withName('RsyncErreur');
+  },
+  BlockCountMismatch: (expected: number, actual: number) => {
+    return Erreur.create(new Error(`Block count mismatch, expected ${expected}, got ${actual}`))
+      .with(RsyncErreurKey.Provider({ kind: 'BlockCountMismatchKey', expected, actual }))
+      .withName('RsyncErreur');
+  },
+  UnexpectedEof: () => {
+    return Erreur.create(new Error('Unexpected end of file'))
+      .with(RsyncErreurKey.Provider({ kind: 'UnexpectedEofKey' }))
+      .withName('RsyncErreur');
+  },
+  ExpectedEof: () => {
+    return Erreur.create(new Error('Expected end of file but found more data'))
+      .with(RsyncErreurKey.Provider({ kind: 'ExpectedEofKey' }))
+      .withName('RsyncErreur');
+  },
+};
