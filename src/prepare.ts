@@ -1,4 +1,4 @@
-import { ChecksumFile } from './files/Checksum';
+import { buildChecksum } from './files/Checksum';
 import type { Data } from './types';
 import { adler32 } from './utils/adler32';
 import { md5 } from './utils/md5';
@@ -8,7 +8,7 @@ export function prepare(bFile: Data, blockSize = DEFAULT_BLOCK_SIZE): ArrayBuffe
   const bView = new Uint8Array(bFile);
 
   const blocksCount = Math.ceil(bView.length / blockSize);
-  const file = ChecksumFile.build(blockSize, blocksCount);
+  const file = buildChecksum(blockSize, blocksCount);
 
   for (let i = 0; i < blocksCount; i++) {
     const start = i * blockSize;

@@ -1,9 +1,9 @@
+import type { IWriter } from '@dldc/file';
+import { writeUint8, writer } from '@dldc/file';
 import type { IBlock } from './files/Checksum';
-import { ChecksumFile } from './files/Checksum';
-import { DiffFile } from './files/Diff';
+import { parseChecksum } from './files/Checksum';
+import { buildDiff } from './files/Diff';
 import type { Data } from './types';
-import type { IFileBuilder } from './utils/FileBuilder';
-import { FileBuilder } from './utils/FileBuilder';
 import { adler32, rollingAdler32 } from './utils/adler32';
 import type { Md5Hash } from './utils/md5';
 import { md5 } from './utils/md5';
@@ -20,18 +20,18 @@ export interface IParsedChecksum {
 
 export function diff(aFile: Data, checksum: ArrayBuffer): ArrayBuffer {
   const aView = new Uint8Array(aFile);
-  const { blockSize, blocksCount, readBlock, readEof } = ChecksumFile.parse(checksum);
+  const { blockSize, blocksCount, readBlock, readEof } = parseChecksum(checksum);
 
   const hashTable = createHashTable(blocksCount, readBlock, readEof);
 
-  const file = DiffFile.build(blockSize);
+  const file = buildDiff(blockSize);
 
   let offset = 0;
 
   // previous block checksum or null if prev is matched block or first block
   let blockSum: number | null = null;
 
-  let currentPatchContent: null | IFileBuilder = null;
+  let currentPatchContent: null | IWriter = null;
 
   while (offset < aView.length) {
     const blockEnd = offset + blockSize;
@@ -53,9 +53,9 @@ export function diff(aFile: Data, checksum: ArrayBuffer): ArrayBuffer {
       // if we don't have a match
       // 1) add the current byte to the current patch
       if (currentPatchContent === null) {
-        currentPatchContent = FileBuilder();
+        currentPatchContent = writer();
       }
-      currentPatchContent.writeUint8(byte);
+      currentPatchContent.write(writeUint8, byte);
       // 2) move to the next byte
       offset++;
       continue;

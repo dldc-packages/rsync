@@ -11,9 +11,8 @@
  *   n bytes - new data
  */
 
+import { readBufferFixed, readUint32, reader, writeBuffer, writeUint32, writer } from '@dldc/file';
 import { RsyncErreur } from '../RsyncErreur';
-import { FileBuilder } from '../utils/FileBuilder';
-import { FileParser } from '../utils/FileParser';
 
 export interface IDiffBuilder {
   addMatchedBlock(index: number): void;
@@ -36,121 +35,113 @@ export interface IDiffParser {
   readEof(): void;
 }
 
-export const DiffFile = (() => {
+export function buildDiff(blockSize: number): IDiffBuilder {
+  let patchesCount = 0;
+  let matchedBlocksCount = 0;
+  let lastMatchIndex = 0;
+
+  const matchedBlocksFile = writer();
+  const patchesFile = writer();
+
   return {
-    build,
-    parse,
-    parseAll,
+    addMatchedBlock,
+    addPatch,
+    getArrayBuffer,
   };
 
-  function build(blockSize: number): IDiffBuilder {
-    let patchesCount = 0;
-    let matchedBlocksCount = 0;
-    let lastMatchIndex = 0;
-
-    const matchedBlocksFile = FileBuilder();
-    const patchesFile = FileBuilder();
-
-    return {
-      addMatchedBlock,
-      addPatch,
-      getArrayBuffer,
-    };
-
-    function addMatchedBlock(index: number) {
-      matchedBlocksFile.writeUint32(index);
-      matchedBlocksCount += 1;
-      lastMatchIndex = index;
-    }
-
-    function addPatch(patch: ArrayBuffer) {
-      patchesFile.writeUint32(lastMatchIndex);
-      patchesFile.writeUint32(patch.byteLength);
-      patchesFile.writeArrayBuffer(patch);
-      patchesCount += 1;
-    }
-
-    function getArrayBuffer() {
-      const file = FileBuilder();
-      file.writeUint32(blockSize);
-      file.writeUint32(patchesCount);
-      file.writeUint32(matchedBlocksCount);
-      file.writeArrayBuffer(matchedBlocksFile.getArrayBuffer());
-      file.writeArrayBuffer(patchesFile.getArrayBuffer());
-      return file.getArrayBuffer();
-    }
+  function addMatchedBlock(index: number) {
+    matchedBlocksFile.write(writeUint32, index);
+    matchedBlocksCount += 1;
+    lastMatchIndex = index;
   }
 
-  function parse(data: ArrayBuffer): IDiffParser {
-    const file = FileParser(data);
-    const blockSize = file.readUint32();
-    const patchesCount = file.readUint32();
-    const matchedBlocksCount = file.readUint32();
-
-    const matchedBlocksFile = file.readArrayBuffer(matchedBlocksCount * 4);
-    const matchedBlocksFileParser = FileParser(matchedBlocksFile);
-
-    let readPatchCount = 0;
-    let readMatchedBlockCount = 0;
-
-    return {
-      blockSize,
-      matchedBlocksCount,
-      patchesCount,
-      matchedBlocksFile,
-      readMatchedBlock,
-      readPatch,
-      readEof: file.readEof,
-    };
-
-    function readMatchedBlock(): number | null {
-      if (readMatchedBlockCount >= matchedBlocksCount) {
-        return null;
-      }
-      const blockIndex = matchedBlocksFileParser.readUint32();
-      readMatchedBlockCount += 1;
-      return blockIndex;
-    }
-
-    function readPatch(): IPatch | null {
-      if (readPatchCount >= patchesCount) {
-        return null;
-      }
-      const blockIndex = file.readUint32();
-      const patchSize = file.readUint32();
-      const data = file.readArrayBuffer(patchSize);
-      readPatchCount += 1;
-      return {
-        blockIndex,
-        data,
-      };
-    }
+  function addPatch(patch: ArrayBuffer) {
+    patchesFile.write(writeUint32, lastMatchIndex);
+    patchesFile.write(writeUint32, patch.byteLength);
+    patchesFile.write(writeBuffer, new Uint8Array(patch));
+    patchesCount += 1;
   }
 
-  function parseAll(data: ArrayBuffer) {
-    const { blockSize, matchedBlocksCount, readMatchedBlock, patchesCount, readPatch } = parse(data);
-    const matchedBlocks: number[] = [];
-    for (let i = 0; i < matchedBlocksCount; i += 1) {
-      const blockIndex = readMatchedBlock();
-      if (blockIndex === null) {
-        throw RsyncErreur.UnexpectedEof();
-      }
-      matchedBlocks.push(blockIndex);
-    }
+  function getArrayBuffer() {
+    const file = writer();
+    file.write(writeUint32, blockSize);
+    file.write(writeUint32, patchesCount);
+    file.write(writeUint32, matchedBlocksCount);
+    file.write(writeBuffer, new Uint8Array(matchedBlocksFile.getArrayBuffer()));
+    file.write(writeBuffer, new Uint8Array(patchesFile.getArrayBuffer()));
+    return file.getArrayBuffer();
+  }
+}
 
-    const patches: Array<IPatch> = [];
-    for (let i = 0; i < patchesCount; i += 1) {
-      const patch = readPatch();
-      if (patch === null) {
-        throw RsyncErreur.UnexpectedEof();
-      }
-      patches.push(patch);
-    }
+export function parseDiff(data: ArrayBuffer): IDiffParser {
+  const file = reader(data);
+  const blockSize = file.read(readUint32);
+  const patchesCount = file.read(readUint32);
+  const matchedBlocksCount = file.read(readUint32);
 
+  const matchedBlocksFile = file.read(readBufferFixed(matchedBlocksCount * 4));
+  const matchedBlocksFileParser = reader(matchedBlocksFile);
+
+  let readPatchCount = 0;
+  let readMatchedBlockCount = 0;
+
+  return {
+    blockSize,
+    matchedBlocksCount,
+    patchesCount,
+    matchedBlocksFile,
+    readMatchedBlock,
+    readPatch,
+    readEof: file.readEof,
+  };
+
+  function readMatchedBlock(): number | null {
+    if (readMatchedBlockCount >= matchedBlocksCount) {
+      return null;
+    }
+    const blockIndex = matchedBlocksFileParser.read(readUint32);
+    readMatchedBlockCount += 1;
+    return blockIndex;
+  }
+
+  function readPatch(): IPatch | null {
+    if (readPatchCount >= patchesCount) {
+      return null;
+    }
+    const blockIndex = file.read(readUint32);
+    const patchSize = file.read(readUint32);
+    const data = file.read(readBufferFixed(patchSize));
+    readPatchCount += 1;
     return {
-      blockSize,
-      matchedBlocks,
-      patches,
+      blockIndex,
+      data,
     };
   }
-})();
+}
+
+export function parseAllDiff(data: ArrayBuffer) {
+  const { blockSize, matchedBlocksCount, readMatchedBlock, patchesCount, readPatch } = parseDiff(data);
+  const matchedBlocks: number[] = [];
+  for (let i = 0; i < matchedBlocksCount; i += 1) {
+    const blockIndex = readMatchedBlock();
+    if (blockIndex === null) {
+      throw RsyncErreur.UnexpectedEof();
+    }
+    matchedBlocks.push(blockIndex);
+  }
+
+  const patches: Array<IPatch> = [];
+  for (let i = 0; i < patchesCount; i += 1) {
+    const patch = readPatch();
+    if (patch === null) {
+      throw RsyncErreur.UnexpectedEof();
+    }
+    patches.push(patch);
+  }
+
+  return {
+    blockSize,
+    matchedBlocks,
+    patches,
+  };
+}

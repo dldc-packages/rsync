@@ -1,6 +1,6 @@
+import { readUint32, reader, writeUint32, writer } from '@dldc/file';
 import { RsyncErreur } from '../RsyncErreur';
-import { FileBuilder } from '../utils/FileBuilder';
-import { FileParser } from '../utils/FileParser';
+import { readMd5, writeMd5 } from '../utils/blocks';
 import type { Md5Hash } from '../utils/md5';
 
 /**
@@ -36,72 +36,65 @@ export interface IChecksumBuilder {
   getArrayBuffer(): ArrayBuffer;
 }
 
-export const ChecksumFile = (() => {
+export function parseChecksum(data: ArrayBuffer): IChecksumParser {
+  const file = reader(data);
+
+  const blockSize = file.read(readUint32);
+  const blocksCount = file.read(readUint32);
+
+  let currentBlockCount = 0;
+
   return {
-    parse,
-    build,
+    blockSize,
+    blocksCount,
+    readBlock,
+    readEof,
   };
 
-  function parse(data: ArrayBuffer): IChecksumParser {
-    const file = FileParser(data);
-
-    const blockSize = file.readUint32();
-    const blocksCount = file.readUint32();
-
-    let currentBlockCount = 0;
-
-    return {
-      blockSize,
-      blocksCount,
-      readBlock,
-      readEof,
+  function readBlock(): IBlock {
+    const adler32 = file.read(readUint32);
+    const md5 = file.read(readMd5);
+    const block: IBlock = {
+      adler32,
+      md5,
     };
-
-    function readBlock(): IBlock {
-      const adler32 = file.readUint32();
-      const md5 = file.readMd5();
-      const block: IBlock = {
-        adler32,
-        md5,
-      };
-      currentBlockCount += 1;
-      return block;
-    }
-
-    function readEof() {
-      if (blocksCount !== currentBlockCount) {
-        throw RsyncErreur.BlockCountMismatch(blocksCount, currentBlockCount);
-      }
-      file.readEof();
-    }
+    currentBlockCount += 1;
+    return block;
   }
 
-  function build(blockSize: number, blocksCount: number): IChecksumBuilder {
-    const size = BLOCK_SIZE_BYTES + BLOCK_COUNT_BYTES + blocksCount * CHUNK_SIZE;
-    const file = FileBuilder(size);
-
-    let currentBlockCount = 0;
-
-    file.writeUint32(blockSize);
-    file.writeUint32(blocksCount);
-
-    return {
-      addBlock,
-      getArrayBuffer,
-    };
-
-    function addBlock(block: IBlock): IBlock {
-      file.writeUint32(block.adler32);
-      file.writeMd5(block.md5);
-      currentBlockCount += 1;
-      return block;
+  function readEof() {
+    if (blocksCount !== currentBlockCount) {
+      throw RsyncErreur.BlockCountMismatch(blocksCount, currentBlockCount);
     }
-
-    function getArrayBuffer(): ArrayBuffer {
-      if (blocksCount !== currentBlockCount) {
-        throw RsyncErreur.BlockCountMismatch(blocksCount, currentBlockCount);
-      }
-      return file.getArrayBuffer();
-    }
+    file.readEof();
   }
-})();
+}
+
+export function buildChecksum(blockSize: number, blocksCount: number): IChecksumBuilder {
+  const size = BLOCK_SIZE_BYTES + BLOCK_COUNT_BYTES + blocksCount * CHUNK_SIZE;
+  const file = writer(size);
+
+  let currentBlockCount = 0;
+
+  file.write(writeUint32, blockSize);
+  file.write(writeUint32, blocksCount);
+
+  return {
+    addBlock,
+    getArrayBuffer,
+  };
+
+  function addBlock(block: IBlock): IBlock {
+    file.write(writeUint32, block.adler32);
+    file.write(writeMd5, block.md5);
+    currentBlockCount += 1;
+    return block;
+  }
+
+  function getArrayBuffer(): ArrayBuffer {
+    if (blocksCount !== currentBlockCount) {
+      throw RsyncErreur.BlockCountMismatch(blocksCount, currentBlockCount);
+    }
+    return file.getArrayBuffer();
+  }
+}
