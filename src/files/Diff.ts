@@ -12,7 +12,7 @@
  */
 
 import { readBufferFixed, readUint32, reader, writeBuffer, writeUint32, writer } from '@dldc/file';
-import { RsyncErreur } from '../RsyncErreur';
+import { throwUnexpectedEof } from '../erreur';
 
 export interface IDiffBuilder {
   addMatchedBlock(index: number): void;
@@ -125,7 +125,7 @@ export function parseAllDiff(data: ArrayBuffer) {
   for (let i = 0; i < matchedBlocksCount; i += 1) {
     const blockIndex = readMatchedBlock();
     if (blockIndex === null) {
-      throw RsyncErreur.UnexpectedEof();
+      return throwUnexpectedEof();
     }
     matchedBlocks.push(blockIndex);
   }
@@ -134,7 +134,7 @@ export function parseAllDiff(data: ArrayBuffer) {
   for (let i = 0; i < patchesCount; i += 1) {
     const patch = readPatch();
     if (patch === null) {
-      throw RsyncErreur.UnexpectedEof();
+      return throwUnexpectedEof();
     }
     patches.push(patch);
   }

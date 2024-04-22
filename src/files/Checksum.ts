@@ -1,5 +1,5 @@
 import { readUint32, reader, writeUint32, writer } from '@dldc/file';
-import { RsyncErreur } from '../RsyncErreur';
+import { throwBlockCountMismatch } from '../erreur';
 import { readMd5, writeMd5 } from '../utils/blocks';
 import type { Md5Hash } from '../utils/md5';
 
@@ -64,7 +64,7 @@ export function parseChecksum(data: ArrayBuffer): IChecksumParser {
 
   function readEof() {
     if (blocksCount !== currentBlockCount) {
-      throw RsyncErreur.BlockCountMismatch(blocksCount, currentBlockCount);
+      return throwBlockCountMismatch(blocksCount, currentBlockCount);
     }
     file.readEof();
   }
@@ -93,7 +93,7 @@ export function buildChecksum(blockSize: number, blocksCount: number): IChecksum
 
   function getArrayBuffer(): ArrayBuffer {
     if (blocksCount !== currentBlockCount) {
-      throw RsyncErreur.BlockCountMismatch(blocksCount, currentBlockCount);
+      return throwBlockCountMismatch(blocksCount, currentBlockCount);
     }
     return file.getArrayBuffer();
   }

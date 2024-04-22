@@ -1,5 +1,5 @@
 import { writeBuffer, writeUint32, writer } from '@dldc/file';
-import { RsyncErreur } from './RsyncErreur';
+import { throwInvalidDiff } from './erreur';
 import { parseDiff } from './files/Diff';
 import type { Data } from './types';
 import { arrayBufferEquals } from './utils/arrayBufferEquals';
@@ -45,7 +45,7 @@ export function apply(file: Data, patch: ArrayBuffer): ArrayBuffer {
     // write all matched block until nextPatch.blockIndex
     while (nextMatchedBlock === null || nextMatchedBlock !== nextPatch.blockIndex) {
       if (nextMatchedBlock === null) {
-        throw RsyncErreur.InvalidDiff(nextPatch.blockIndex);
+        return throwInvalidDiff(nextPatch.blockIndex);
       }
       nextMatchedBlock = applyMatchedBlock(nextMatchedBlock);
     }
