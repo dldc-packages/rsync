@@ -67,26 +67,6 @@
       "jsr:@dldc/erreur@^7.1.1",
       "jsr:@dldc/file@^2.0.1",
       "npm:sql.js@^1.10.3"
-    ],
-    "packageJson": {
-      "dependencies": [
-        "npm:@dldc/erreur@7.1.0",
-        "npm:@dldc/file@^2.0.1",
-        "npm:@eslint/js@^9.2.0",
-        "npm:@types/node@^20.12.8",
-        "npm:@types/sql.js@^1.4.9",
-        "npm:@vitest/coverage-v8@^1.6.0",
-        "npm:auto-changelog@^2.4.0",
-        "npm:eslint@^8.57.0",
-        "npm:prettier@^3.2.5",
-        "npm:release-it@^17.2.1",
-        "npm:rimraf@^5.0.5",
-        "npm:sql.js@^1.10.3",
-        "npm:tsup@^8.0.2",
-        "npm:typescript-eslint@^7.8.0",
-        "npm:typescript@^5.4.5",
-        "npm:vitest@^1.6.0"
-      ]
-    }
+    ]
   }
 }
