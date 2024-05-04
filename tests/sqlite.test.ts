@@ -1,9 +1,9 @@
-import initSqlJs from 'sql.js';
-import { expect, test } from 'vitest';
-import { apply, diff, prepare } from '../src/mod';
-import { toHex } from './utils/hex';
+import { expect } from "$std/expect/mod.ts";
+import initSqlJs from "sql.js";
+import { apply, diff, prepare } from "../mod.ts";
+import { toHex } from "./utils/hex.ts";
 
-test('SQLite test(id, name)', async () => {
+Deno.test("SQLite test(id, name)", async () => {
   const sqlJs = await initSqlJs();
 
   // create empty database
@@ -31,7 +31,10 @@ test('SQLite test(id, name)', async () => {
 
   // Check data
   const result = targetDb1.exec(`SELECT * FROM test;`);
-  expect(result).toEqual([{ columns: ['id', 'name'], values: [['abcd', 'foo']] }]);
+  expect(result).toEqual([{
+    columns: ["id", "name"],
+    values: [["abcd", "foo"]],
+  }]);
 
   // Insert more data
   sourceDb1.exec(`INSERT INTO test VALUES ('efgh', 'bar');`);
@@ -53,10 +56,10 @@ test('SQLite test(id, name)', async () => {
   const result2 = targetDb2.exec(`SELECT * FROM test;`);
   expect(result2).toEqual([
     {
-      columns: ['id', 'name'],
+      columns: ["id", "name"],
       values: [
-        ['abcd', 'foo'],
-        ['efgh', 'bar'],
+        ["abcd", "foo"],
+        ["efgh", "bar"],
       ],
     },
   ]);

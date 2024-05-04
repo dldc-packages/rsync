@@ -1,9 +1,9 @@
-import { Buffer } from 'buffer';
-import { expect, test } from 'vitest';
-import { prepare } from '../src/mod';
-import { data } from './utils/data';
+import { expect } from "$std/expect/mod.ts";
+import { Buffer } from "node:buffer";
+import { prepare } from "../mod.ts";
+import { data } from "./utils/data.ts";
 
-test('checksums', () => {
+Deno.test("checksums", () => {
   const testData1 = data.buffer.slice(0);
   const blockSize = 16;
   const doc1 = Buffer.from(prepare(testData1, blockSize));

@@ -9,5 +9,5 @@ export function toHex(buf: ArrayBuffer): string[] {
 }
 
 export function hex(num: number, size = 8): string {
-  return num.toString(16).padStart(size, '0');
+  return num.toString(16).padStart(size, "0");
 }

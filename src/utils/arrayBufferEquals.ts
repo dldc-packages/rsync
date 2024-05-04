@@ -3,7 +3,10 @@
  * Compare using a 32-bit view first, then a 8-bit view if the length is not a multiple of 4.
  * (I guess this is faster than comparing 8-bit views only but did not benchmark it 🤷)
  */
-export function arrayBufferEquals(left: ArrayBuffer, right: ArrayBuffer): boolean {
+export function arrayBufferEquals(
+  left: ArrayBuffer,
+  right: ArrayBuffer,
+): boolean {
   if (left.byteLength !== right.byteLength) {
     return false;
   }

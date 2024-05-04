@@ -1,12 +1,12 @@
-import type { IWriter } from '@dldc/file';
-import { writeUint8, writer } from '@dldc/file';
-import type { IBlock } from './files/Checksum';
-import { parseChecksum } from './files/Checksum';
-import { buildDiff } from './files/Diff';
-import type { Data } from './types';
-import { adler32, rollingAdler32 } from './utils/adler32';
-import type { Md5Hash } from './utils/md5';
-import { md5 } from './utils/md5';
+import type { IWriter } from "@dldc/file";
+import { writer, writeUint8 } from "@dldc/file";
+import type { IBlock } from "./files/Checksum.ts";
+import { parseChecksum } from "./files/Checksum.ts";
+import { buildDiff } from "./files/Diff.ts";
+import type { Data } from "./types.ts";
+import { adler32, rollingAdler32 } from "./utils/adler32.ts";
+import type { Md5Hash } from "./utils/md5.ts";
+import { md5 } from "./utils/md5.ts";
 
 export type THashTableItem = [blockIndex: number, md5sum: Md5Hash];
 export type THashTableEntry = Array<THashTableItem>;
@@ -20,7 +20,9 @@ export interface IParsedChecksum {
 
 export function diff(aFile: Data, checksum: ArrayBuffer): ArrayBuffer {
   const aView = new Uint8Array(aFile);
-  const { blockSize, blocksCount, readBlock, readEof } = parseChecksum(checksum);
+  const { blockSize, blocksCount, readBlock, readEof } = parseChecksum(
+    checksum,
+  );
 
   const hashTable = createHashTable(blocksCount, readBlock, readEof);
 
@@ -42,10 +44,12 @@ export function diff(aFile: Data, checksum: ArrayBuffer): ArrayBuffer {
     const block = aView.subarray(offset, blockEnd);
     const byte = aView[offset];
     // Compute block checksum using rolling checksum if previous sum is defined
-    blockSum =
-      blockSum === null
-        ? adler32(block)
-        : rollingAdler32(blockSum, blockSize, aView[offset - 1], aView[offset + blockSize - 1]);
+    blockSum = blockSum === null ? adler32(block) : rollingAdler32(
+      blockSum,
+      blockSize,
+      aView[offset - 1],
+      aView[offset + blockSize - 1],
+    );
 
     const matchedBlock = findMatch(hashTable, blockSum, block);
 
@@ -83,7 +87,11 @@ export function diff(aFile: Data, checksum: ArrayBuffer): ArrayBuffer {
   return file.getArrayBuffer();
 }
 
-function createHashTable(blocksCount: number, readBlock: () => IBlock, readEof: () => void): THashTable {
+function createHashTable(
+  blocksCount: number,
+  readBlock: () => IBlock,
+  readEof: () => void,
+): THashTable {
   const hashTable: THashTable = new Map();
 
   for (let blockIndex = 1; blockIndex <= blocksCount; blockIndex++) {
@@ -104,7 +112,11 @@ function createHashTable(blocksCount: number, readBlock: () => IBlock, readEof: 
 /**
  * Returns false of the index of the matched block
  */
-function findMatch(hashTable: THashTable, checksum: number, block: Uint8Array): number | false {
+function findMatch(
+  hashTable: THashTable,
+  checksum: number,
+  block: Uint8Array,
+): number | false {
   const entry = hashTable.get(checksum);
   if (!entry) {
     return false;
@@ -114,7 +126,12 @@ function findMatch(hashTable: THashTable, checksum: number, block: Uint8Array): 
     const [blockIndex, md5sum] = entry[i];
     //do strong comparison
     const blockMd5Raw = md5(block);
-    const blockMd5 = new Uint32Array([blockMd5Raw[0], blockMd5Raw[1], blockMd5Raw[2], blockMd5Raw[3]]); //convert to unsigned 32
+    const blockMd5 = new Uint32Array([
+      blockMd5Raw[0],
+      blockMd5Raw[1],
+      blockMd5Raw[2],
+      blockMd5Raw[3],
+    ]); //convert to unsigned 32
 
     if (
       md5sum[0] === blockMd5[0] &&

@@ -1,7 +1,7 @@
-import { readUint32, reader, writeUint32, writer } from '@dldc/file';
-import { throwBlockCountMismatch } from '../erreur';
-import { readMd5, writeMd5 } from '../utils/blocks';
-import type { Md5Hash } from '../utils/md5';
+import { reader, readUint32, writer, writeUint32 } from "@dldc/file";
+import { throwBlockCountMismatch } from "../erreur.ts";
+import { readMd5, writeMd5 } from "../utils/blocks.ts";
+import type { Md5Hash } from "../utils/md5.ts";
 
 /**
  * - 4 bytes block size
@@ -70,7 +70,10 @@ export function parseChecksum(data: ArrayBuffer): IChecksumParser {
   }
 }
 
-export function buildChecksum(blockSize: number, blocksCount: number): IChecksumBuilder {
+export function buildChecksum(
+  blockSize: number,
+  blocksCount: number,
+): IChecksumBuilder {
   const size = BLOCK_SIZE_BYTES + BLOCK_COUNT_BYTES + blocksCount * CHUNK_SIZE;
   const file = writer(size);
 

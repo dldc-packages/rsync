@@ -1,10 +1,13 @@
-import { buildChecksum } from './files/Checksum';
-import type { Data } from './types';
-import { adler32 } from './utils/adler32';
-import { md5 } from './utils/md5';
-import { DEFAULT_BLOCK_SIZE } from './utils/options';
+import { buildChecksum } from "./files/Checksum.ts";
+import type { Data } from "./types.ts";
+import { adler32 } from "./utils/adler32.ts";
+import { md5 } from "./utils/md5.ts";
+import { DEFAULT_BLOCK_SIZE } from "./utils/options.ts";
 
-export function prepare(bFile: Data, blockSize = DEFAULT_BLOCK_SIZE): ArrayBuffer {
+export function prepare(
+  bFile: Data,
+  blockSize = DEFAULT_BLOCK_SIZE,
+): ArrayBuffer {
   const bView = new Uint8Array(bFile);
 
   const blocksCount = Math.ceil(bView.length / blockSize);

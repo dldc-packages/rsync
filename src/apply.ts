@@ -1,18 +1,27 @@
-import { writeBuffer, writeUint32, writer } from '@dldc/file';
-import { throwInvalidDiff } from './erreur';
-import { parseDiff } from './files/Diff';
-import type { Data } from './types';
-import { arrayBufferEquals } from './utils/arrayBufferEquals';
+import { writeBuffer, writer, writeUint32 } from "@dldc/file";
+import { throwInvalidDiff } from "./erreur.ts";
+import { parseDiff } from "./files/Diff.ts";
+import type { Data } from "./types.ts";
+import { arrayBufferEquals } from "./utils/arrayBufferEquals.ts";
 
 export function apply(file: Data, patch: ArrayBuffer): ArrayBuffer {
   const bView = new Uint8Array(file);
 
-  const { blockSize, patchesCount, matchedBlocksCount, readMatchedBlock, matchedBlocksFile, readPatch, readEof } =
-    parseDiff(patch);
+  const {
+    blockSize,
+    patchesCount,
+    matchedBlocksCount,
+    readMatchedBlock,
+    matchedBlocksFile,
+    readPatch,
+    readEof,
+  } = parseDiff(patch);
 
   // hanlde perfect equality
   const expectedMatchedBlocksCount = Math.ceil(file.byteLength / blockSize);
-  const expectedMatchedBlocksFile = createExpectedMatchedBlockFile(expectedMatchedBlocksCount);
+  const expectedMatchedBlocksFile = createExpectedMatchedBlockFile(
+    expectedMatchedBlocksCount,
+  );
   // file is the same if all matched blocks are in incremental order
   if (
     patchesCount === 0 &&
@@ -28,7 +37,10 @@ export function apply(file: Data, patch: ArrayBuffer): ArrayBuffer {
 
   const applyMatchedBlock = (blockNumber: number) => {
     const blockIndex = blockNumber - 1; // blockNumber is 1-based
-    result.write(writeBuffer, bView.subarray(blockIndex * blockSize, (blockIndex + 1) * blockSize));
+    result.write(
+      writeBuffer,
+      bView.subarray(blockIndex * blockSize, (blockIndex + 1) * blockSize),
+    );
     return readMatchedBlock();
   };
 
@@ -43,7 +55,9 @@ export function apply(file: Data, patch: ArrayBuffer): ArrayBuffer {
 
   while (nextPatch !== null) {
     // write all matched block until nextPatch.blockIndex
-    while (nextMatchedBlock === null || nextMatchedBlock !== nextPatch.blockIndex) {
+    while (
+      nextMatchedBlock === null || nextMatchedBlock !== nextPatch.blockIndex
+    ) {
       if (nextMatchedBlock === null) {
         return throwInvalidDiff(nextPatch.blockIndex);
       }

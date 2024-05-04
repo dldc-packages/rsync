@@ -1,3 +1,0 @@
-{
-  "additionalDevDependencies": ["@types/sql.js", "sql.js"]
-}

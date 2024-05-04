@@ -25,7 +25,12 @@ export function adler32(buf: Uint8Array): number {
   return ((b << 16) | a) >>> 0;
 }
 
-export function rollingAdler32(prev: number, size: number, oldByte: number, newByte: number): number {
+export function rollingAdler32(
+  prev: number,
+  size: number,
+  oldByte: number,
+  newByte: number,
+): number {
   let a = prev & 0xffff;
   let b = (prev >>> 16) & 0xffff;
 

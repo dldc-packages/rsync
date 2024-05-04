@@ -11,8 +11,15 @@
  *   n bytes - new data
  */
 
-import { readBufferFixed, readUint32, reader, writeBuffer, writeUint32, writer } from '@dldc/file';
-import { throwUnexpectedEof } from '../erreur';
+import {
+  readBufferFixed,
+  reader,
+  readUint32,
+  writeBuffer,
+  writer,
+  writeUint32,
+} from "@dldc/file";
+import { throwUnexpectedEof } from "../erreur.ts";
 
 export interface IDiffBuilder {
   addMatchedBlock(index: number): void;
@@ -119,8 +126,20 @@ export function parseDiff(data: ArrayBuffer): IDiffParser {
   }
 }
 
-export function parseAllDiff(data: ArrayBuffer) {
-  const { blockSize, matchedBlocksCount, readMatchedBlock, patchesCount, readPatch } = parseDiff(data);
+export interface TParseAllDiff {
+  blockSize: number;
+  matchedBlocks: number[];
+  patches: IPatch[];
+}
+
+export function parseAllDiff(data: ArrayBuffer): TParseAllDiff {
+  const {
+    blockSize,
+    matchedBlocksCount,
+    readMatchedBlock,
+    patchesCount,
+    readPatch,
+  } = parseDiff(data);
   const matchedBlocks: number[] = [];
   for (let i = 0; i < matchedBlocksCount; i += 1) {
     const blockIndex = readMatchedBlock();
