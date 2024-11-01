@@ -3,9 +3,9 @@
   "version": "4.0.1",
   "exports": "./mod.ts",
   "imports": {
-    "$std/": "https://deno.land/std@0.224.0/",
     "@dldc/erreur": "jsr:@dldc/erreur@^7.1.1",
     "@dldc/file": "jsr:@dldc/file@^2.0.1",
+    "@std/expect": "jsr:@std/expect@^1.0.7",
     "sql.js": "npm:sql.js@^1.10.3"
   },
   "tasks": {

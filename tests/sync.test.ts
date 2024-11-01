@@ -1,4 +1,4 @@
-import { expect } from "$std/expect/mod.ts";
+import { expect } from "@std/expect";
 import { readFile } from "node:fs/promises";
 import { apply, diff, prepare } from "../mod.ts";
 import { adler32 } from "../src/utils/adler32.ts";

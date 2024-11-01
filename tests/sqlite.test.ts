@@ -1,4 +1,4 @@
-import { expect } from "$std/expect/mod.ts";
+import { expect } from "@std/expect";
 import initSqlJs from "sql.js";
 import { apply, diff, prepare } from "../mod.ts";
 import { toHex } from "./utils/hex.ts";

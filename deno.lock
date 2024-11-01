@@ -1,29 +1,47 @@
 {
-  "version": "3",
-  "packages": {
-    "specifiers": {
-      "jsr:@dldc/erreur@^7.1.1": "jsr:@dldc/erreur@7.1.1",
-      "jsr:@dldc/file@^2.0.1": "jsr:@dldc/file@2.0.1",
-      "npm:@types/node": "npm:@types/node@18.16.19",
-      "npm:sql.js@^1.10.3": "npm:sql.js@1.10.3"
+  "version": "4",
+  "specifiers": {
+    "jsr:@dldc/erreur@^7.1.1": "7.1.1",
+    "jsr:@dldc/file@^2.0.1": "2.0.1",
+    "jsr:@std/assert@^1.0.7": "1.0.7",
+    "jsr:@std/expect@^1.0.7": "1.0.7",
+    "jsr:@std/internal@^1.0.5": "1.0.5",
+    "npm:@types/node@*": "18.16.19",
+    "npm:sql.js@^1.10.3": "1.10.3"
+  },
+  "jsr": {
+    "@dldc/erreur@7.1.1": {
+      "integrity": "9ba954ae0654e4ed003959c77aaa009fdf6c64f60bf4cfec33b134556ab0d6da"
     },
-    "jsr": {
-      "@dldc/erreur@7.1.1": {
-        "integrity": "9ba954ae0654e4ed003959c77aaa009fdf6c64f60bf4cfec33b134556ab0d6da"
-      },
-      "@dldc/file@2.0.1": {
-        "integrity": "73bce0ea16331d073b7593bbe4e5b4551d055a005b92fa0b55d5e9c22a111e72"
-      }
+    "@dldc/file@2.0.1": {
+      "integrity": "73bce0ea16331d073b7593bbe4e5b4551d055a005b92fa0b55d5e9c22a111e72",
+      "dependencies": [
+        "jsr:@dldc/erreur"
+      ]
     },
-    "npm": {
-      "@types/node@18.16.19": {
-        "integrity": "sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==",
-        "dependencies": {}
-      },
-      "sql.js@1.10.3": {
-        "integrity": "sha512-H46aWtQkdyjZwFQgraUruy5h/DyJBbAK3EA/WEMqiqF6PGPfKBSKBj/er3dVyYqVIoYfRf5TFM/loEjtQIrqJg==",
-        "dependencies": {}
-      }
+    "@std/assert@1.0.7": {
+      "integrity": "64ce9fac879e0b9f3042a89b3c3f8ccfc9c984391af19e2087513a79d73e28c3",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/expect@1.0.7": {
+      "integrity": "3904afa77cfe5c45dd2cd2c476e6fc5b6f57103d712890f0783d74c19d4b05a9",
+      "dependencies": [
+        "jsr:@std/assert",
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/internal@1.0.5": {
+      "integrity": "54a546004f769c1ac9e025abd15a76b6671ddc9687e2313b67376125650dc7ba"
+    }
+  },
+  "npm": {
+    "@types/node@18.16.19": {
+      "integrity": "sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA=="
+    },
+    "sql.js@1.10.3": {
+      "integrity": "sha512-H46aWtQkdyjZwFQgraUruy5h/DyJBbAK3EA/WEMqiqF6PGPfKBSKBj/er3dVyYqVIoYfRf5TFM/loEjtQIrqJg=="
     }
   },
   "remote": {
@@ -66,6 +84,7 @@
     "dependencies": [
       "jsr:@dldc/erreur@^7.1.1",
       "jsr:@dldc/file@^2.0.1",
+      "jsr:@std/expect@^1.0.7",
       "npm:sql.js@^1.10.3"
     ]
   }

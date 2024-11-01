@@ -1,4 +1,4 @@
-import { expect } from "$std/expect/mod.ts";
+import { expect } from "@std/expect";
 import { adler32, rollingAdler32 } from "../src/utils/adler32.ts";
 
 Deno.test("rollingAdler32", () => {
