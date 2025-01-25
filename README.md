@@ -3,6 +3,13 @@
 > A pure TypeScript implementation of the
 > [rsync algorithm](https://www.andrew.cmu.edu/course/15-749/READINGS/required/cas/tridgell96.pdf)
 
+> [!WARNING]
+> There is an issue wit the implementation of the algorithm when diffing 2 empty
+> files. Unfortunately, I don't have the time to fix it right now as I'm no
+> longer using this package. Instead, I'm using
+> [@dldc/librsync](https://github.com/dldc-packages/librsync) which is a WASM
+> port of a Rust implementation.
+
 ## Installation
 
 ```sh
